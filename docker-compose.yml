@@ -2,64 +2,63 @@ version: '3.8'
 
 services:
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3-management
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
 
   postgres:
-    image: postgres:14-alpine
+    image: postgres:15
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin_password
+      POSTGRES_USER: ms_user
+      POSTGRES_PASSWORD: ms_password
       POSTGRES_DB: microsmart_db
-    # Nota: Spring Boot Data JPA creará las tablas automáticamente (ddl-auto: update).
 
   mongodb:
     image: mongo:6
     ports:
       - "27017:27017"
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
   api-gateway:
-    build: 
-      context: ./api-gateway
+    build: ./api-gateway
     ports:
       - "3000:3000"
+    env_file:
+      - ./api-gateway/.env
     depends_on:
       - ms-reservas
       - ms-solicitudes
       - ms-personalizacion
-      - redis
 
   ms-reservas:
-    build: 
-      context: ./ms-reservas
+    build: ./ms-reservas
     ports:
       - "3001:3001"
+    env_file:
+      - ./ms-reservas/.env
     depends_on:
       - postgres
       - rabbitmq
 
   ms-solicitudes:
-    build: 
-      context: ./ms-solicitudes
+    build: ./ms-solicitudes
     ports:
       - "3002:3002"
+    env_file:
+      - ./ms-solicitudes/.env
     depends_on:
-      - postgres
       - rabbitmq
 
   ms-personalizacion:
-    build: 
-      context: ./ms-personalizacion
+    build: ./ms-personalizacion
     ports:
       - "3003:3003"
+    env_file:
+      - ./ms-personalizacion/.env
     depends_on:
       - mongodb

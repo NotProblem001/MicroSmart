@@ -1,0 +1,14 @@
+{
+  "name": "ms-solicitudes",
+  "version": "1.0.0",
+  "description": "MS Solicitudes con RabbitMQ y Circuit Breaker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "express": "^4.18.2",
+    "opossum": "^7.1.0"
+  }
+}
