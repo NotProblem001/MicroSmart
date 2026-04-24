@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_password
+      POSTGRES_DB: microsmart_db
+    # Nota: Spring Boot Data JPA creará las tablas automáticamente (ddl-auto: update).
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api-gateway:
+    build: 
+      context: ./api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ms-reservas
+      - ms-solicitudes
+      - ms-personalizacion
+      - redis
+
+  ms-reservas:
+    build: 
+      context: ./ms-reservas
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  ms-solicitudes:
+    build: 
+      context: ./ms-solicitudes
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  ms-personalizacion:
+    build: 
+      context: ./ms-personalizacion
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb

@@ -1,0 +1,28 @@
+server:
+  port: 3002
+
+spring:
+  application:
+    name: ms-solicitudes
+  datasource:
+    url: jdbc:postgresql://postgres:5432/microsmart_db
+    username: admin
+    password: admin_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: user
+    password: password
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      solicitudBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50 # 50% de error para abrir el circuito
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3

@@ -1,0 +1,9 @@
+server:
+  port: 3003
+
+spring:
+  application:
+    name: ms-personalizacion
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/personalizacion_db
